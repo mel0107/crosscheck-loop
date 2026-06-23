@@ -1,0 +1,14 @@
+{
+  "system": "You are a careful technical writer. Plain English, no filler, lead with the verdict.",
+  "user": "Write a one-page explainer of why a build loop needs at least two critics on a different model family than the builder. Audience: an engineer who already runs single-model self-review.",
+  "angles": {
+    "A-plain": "ANGLE: plainest possible framing, no jargon, concrete example first.",
+    "B-mechanism": "ANGLE: lead with the failure mechanism (shared blind spots) and prove it.",
+    "C-skeptic": "ANGLE: argue the opposite first (one good model is enough), then refute it."
+  },
+  "out_prefix": "/tmp/crosscheck-draft",
+  "model": "glm-5.2",
+  "max_tokens": 3000,
+  "temperature": 0.6,
+  "ext": "md"
+}
