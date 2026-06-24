@@ -26,6 +26,18 @@ than the builder, because a same-family critic shares the builder's blind spots.
 vendors you use is entirely up to whatever API keys you already have. The structure is the
 value, not the brand of model in each seat.
 
+## Ground rule: no fabrication
+
+This sits above the whole loop. Every fact, number, quote, citation, date, and named entity
+in the output must trace to a real source the team actually saw. Inventing one, even a
+plausible one, is a ship-blocker, not a style nit. When a value is unknown: leave the cell
+blank and flagged, research it, and if it still cannot be grounded, surface it as an open
+question. An honest "unknown, needs a source" beats a confident guess every time. Synthetic
+or illustrative content (placeholder data, sample numbers, mock copy) is allowed only when
+explicitly requested, and is labelled as synthetic so it is never mistaken for real. The
+drafters are told this in the brief, and the critics hunt unsupported claims as the
+highest-priority finding.
+
 ## The loop
 
 1. **Draft (worker, fanned out).** A fast, cheap model drafts N variants in parallel from
@@ -39,9 +51,11 @@ value, not the brand of model in each seat.
    bound before the build, not only caught at audit.
 3. **Adversarial critics, cross-family.** At least two critics on a *different model family*
    than the builder, told to break the work, not bless it. Cross-family matters: a critic
-   from the same family as the builder shares its blind spots. On code-bearing builds, give
-   one critic a render/technical lens (it catches the regression class prose critics miss,
-   e.g. a CSS bar fill computing to 0px).
+   from the same family as the builder shares its blind spots. Task them explicitly to flag
+   any number, quote, citation, or named entity with no traceable source as a suspected
+   fabrication, the highest-priority finding class. On code-bearing builds, give one critic a
+   render/technical lens (it catches the regression class prose critics miss, e.g. a CSS bar
+   fill computing to 0px).
 4. **Lead judges and loops to convergence.** The lead applies the real findings and
    re-submits. **The loop is not done until both critics approve the same unchanged final.**
    Any edit after a clean pass voids that pass, so the file you ship is one the critics
