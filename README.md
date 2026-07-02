@@ -49,23 +49,35 @@ highest-priority finding.
    adversarial critics still run on everything it filled. Its "do not use X" caveats fold
    into the brief as binding build constraints, not just ledger rows, so the builder is
    bound before the build, not only caught at audit.
-3. **Adversarial critics, cross-family.** At least two critics on a *different model family*
+3. **Principal direction gate (human, default-on for new builds).** Before any critic burns
+   a round, the human principal reviews the synthesized draft for direction: intent, framing,
+   taste. This is the one failure class critics cannot catch, because they verify against the
+   brief, not against what the principal actually wanted. Structural feedback (add or kill a
+   section, reframe the narrative, change data sources) loops cheaply here while the critics
+   stay idle. The gate locks only on a round with zero change requests; if the lead is unsure
+   whether a piece of feedback is structural, it is structural. The gate never hard-blocks:
+   if the principal is not available, proceed to the critics and flag the skipped gate in the
+   final report. Direction feedback that lands after a clean convergence pass voids that pass
+   like any other edit. Skip the gate on small modifications and quick passes.
+4. **Adversarial critics, cross-family.** At least two critics on a *different model family*
    than the builder, told to break the work, not bless it. Cross-family matters: a critic
    from the same family as the builder shares its blind spots. Task them explicitly to flag
    any number, quote, citation, or named entity with no traceable source as a suspected
    fabrication, the highest-priority finding class. On code-bearing builds, give one critic a
    render/technical lens (it catches the regression class prose critics miss, e.g. a CSS bar
-   fill computing to 0px).
-4. **Lead judges and loops to convergence.** The lead applies the real findings and
+   fill computing to 0px). The cross-family catch is load-bearing: if your only cross-family
+   critic errors or is unavailable, substitute another family or report the run as
+   unverified. Never let a single-family run pass silently as converged.
+5. **Lead judges and loops to convergence.** The lead applies the real findings and
    re-submits. **The loop is not done until both critics approve the same unchanged final.**
    Any edit after a clean pass voids that pass, so the file you ship is one the critics
    actually saw, not one edited past their last look.
-5. **Requirement ledger.** One row per must-have, each marked proved / weak / missing /
+6. **Requirement ledger.** One row per must-have, each marked proved / weak / missing /
    contradicted before ship. This catches the gap critics cannot see: the must-have nobody
    put on the page. On for correctness-critical builds (RFPs, anything with a spec).
-6. **Honesty guard.** A run that hit its round cap, stalled in a two-round stalemate, or
+7. **Honesty guard.** A run that hit its round cap, stalled in a two-round stalemate, or
    errored out is reported as exactly that. It is never relabelled "approved."
-7. **Gate trivial work back to solo.** If the task is a one-liner, the team is overhead.
+8. **Gate trivial work back to solo.** If the task is a one-liner, the team is overhead.
    Run the loop only when the build is big enough to earn it.
 
 ## Why it works
@@ -74,30 +86,54 @@ Adversarial + different model family + loop-to-clean is about 80 percent of the 
 cheap parallel drafting is an accelerant, not the value. The stop condition (convergence +
 ledger + honesty guard) is what keeps a plausible-but-wrong artifact from shipping.
 
-## Setup: what you need
+## The seats
 
-Three seats. Fill each with any model you have access to, as long as the critics are a
-different family than the builder.
+Fill each with any model you have access to; only the boundaries are fixed. Roles pin to
+**tiers, not model IDs**, so a version bump never rots your setup.
 
-| Seat | What it does | Fill it with (examples) | How you call it |
+| Seat | Job | Token profile | Hard boundary |
 |---|---|---|---|
-| **Drafter** | Writes the variants / the change | GLM, Llama, a cheap fast model | `glm_fanout.py` (any OpenAI-compatible API) |
-| **Critic 1** | Adversarial review, technical/render lens | a CLI coding agent (Codex, Claude Code, etc.) | its own CLI, on the copied artifact |
-| **Critic 2** | Adversarial review, fresh eyes | a third family (Gemini, Claude, GPT, ...) | API call or a subagent |
-| **Lead (you)** | Judges, applies findings, enforces the stop | any capable model, or you by hand | runs the loop |
+| **Principal (human)** | Gates direction: intent, framing, taste | Scarcest resource in the loop | Their approval never substitutes for the convergence pass |
+| **Lead** | Briefs, judges, builds, enforces the stop | Accumulates the whole session: your largest recurring cost | Judge of record; never skips the critics |
+| **Drafter** | Fans out N variants, or the delta on a modification | High volume, so cheapest capable tier | Never judges, never ships |
+| **Data deputy** | Pulls sources, builds tables, fills the ledger | Bounded per build | Populates, never signs off |
+| **Bulk hands** | Mechanical chores: parse, reformat, dedupe, liveness-check | Many small parallel calls, cheapest tier | Only tasks verifiable by mechanical diff; it transforms, never adjudicates |
+| **Critic 1 (cross-family)** | Adversarial audit on a different family than the builder | Bounded packet per round | Load-bearing; if it is down, substitute a family or report unverified |
+| **Critic 2 (fresh eyes)** | Second lens: craft, voice, gaps | Bounded packet per round | Never the only critic |
+| **Escalation consult** | One-shot verdict on a judgment knot the loop stalemated on | Single bounded packet, premium model | Break-glass, not a step: advice to the lead, never a verdict of record |
 
-Minimum to start: **one API key for the drafter** plus **two critics on a different family
-than the drafter**. The critics can be two CLI tools you already have logged in (no extra
-keys), or two more API keys. A worked example:
+Minimum to start: one API key for the drafter plus two critics on a different family than
+the drafter. The critics can be two CLI tools you already have logged in (no extra keys).
+A worked example spanning three families:
 
 - Drafter: GLM via Ollama Cloud (`CROSSCHECK_API_KEY`)
 - Critic 1: a `codex`-style CLI you are already signed into (GPT family)
 - Critic 2: a Claude or Gemini subagent (a third family)
-- Lead: you, or whichever assistant you are already chatting with
+- Lead: whichever assistant you are already chatting with; you sit in the principal seat
 
-That spans three families, so no critic shares the drafter's blind spots. Swap any seat for
-what you have. If you only have two families total, run one critic per family and you still
-get the cross-family catch.
+If you only have two families total, run one critic per family and you still get the
+cross-family catch.
+
+## Seat economics
+
+Token spend should follow judgment density, not volume. Three profiles:
+
+- **Volume seats** (drafter, bulk hands): most of the tokens, least of the judgment. Put
+  your cheapest capable model here; this is where a near-free model earns its keep.
+- **Bounded seats** (critics, deputy): they see a packet per round, not the whole session,
+  so a strong model here is affordable. Flat-fee CLI tools you already pay for are ideal.
+- **The accumulating seat** (lead): it holds the brief, every draft, every critique, every
+  round. This is your largest recurring cost, so the naive move of putting your most
+  expensive model "in charge" is exactly the wrong economics.
+
+Keep your most expensive model OUT of the resident lead seat. When the loop hits a genuine
+judgment knot the critics stalemated on, send that model a **decision packet**: the specific
+question plus minimal context, single-shot, no loop. If you find yourself consulting it more
+than once per run, that is a signal to reseat, not to keep paying.
+
+Every run opens by printing the roster (who sits in which seat, and any degradation, e.g. a
+critic down or the direction gate skipped), so a mis-seating is visible in line one, not in
+the bill.
 
 ## glm_fanout.py
 
@@ -137,12 +173,17 @@ Swap in whatever critics you have, as long as they are adversarial and cross-fam
 
 ## Config surface
 
-`variants`, `modificationMode` (delta-draft the change, then regression-audit the whole
-file), `dataDeputy` (optional worker that populates the ledger but never signs off),
-`criticModels` (at least two, cross-family), `requireConvergence` (both critics approve the
-same unchanged final), `requirementLedger` (on for correctness-critical builds), `stopOn`
-(clean pass, two-round stalemate, or cap, never an errored run reported as clean),
-`maxAuditRounds`, `mode` (`light` is one audit pass, `deep` loops to clean).
+`variants`, `directionGate` (principal reviews direction before the critics run; default on
+for new builds, off for small modifications; never hard-blocks), `modificationMode`
+(delta-draft the change, then regression-audit the whole file), `dataDeputy` (optional
+worker that populates the ledger but never signs off), `bulkHands` (mechanical
+diff-verifiable chores only), `criticModels` (at least two, cross-family; substitute a
+family or report unverified if one is down), `escalationConsult` (break-glass single-shot
+decision packet to your premium model; more than once per run means reseat),
+`requireConvergence` (both critics approve the same unchanged final), `requirementLedger`
+(on for correctness-critical builds), `stopOn` (clean pass, two-round stalemate, or cap,
+never an errored run reported as clean), `maxAuditRounds`, `mode` (`light` is one audit
+pass, `deep` loops to clean).
 
 ## Status
 
