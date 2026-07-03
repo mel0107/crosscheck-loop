@@ -171,6 +171,22 @@ proven setup:
 
 Swap in whatever critics you have, as long as they are adversarial and cross-family.
 
+## Tuning note: compiled tool output is a draft, not a verdict
+
+Deterministic compilers are great drafting accelerants: a chart compiler such as
+[microsoft/flint-chart](https://github.com/microsoft/flint-chart) turns a ~10-line spec into a
+full ECharts/Vega-Lite config, cutting drafting tokens and killing the hand-computed-layout bug
+class. But treat compiled output like any other worker output:
+
+- **Its defaults are not your theme.** Flint-compiled options ignore a top-level color palette
+  and render the library's default colors; restyle at the level the compiler actually honors
+  (per-series, in that case) to the deliverable's design system.
+- **Verify the render, not the config.** Headless-render the chart (SSR to SVG works) and check
+  the output (fill colors present, geometry non-zero) before it enters the convergence loop. A
+  correct-looking option object proves nothing.
+- The drafter does not need tool access to benefit: compact specs are plain text, so a cheap
+  drafter authors them and the lead's toolchain compiles, restyles, and verifies.
+
 ## Config surface
 
 `variants`, `directionGate` (principal reviews direction before the critics run; default on
