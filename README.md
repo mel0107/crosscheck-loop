@@ -27,6 +27,13 @@ Any build where being wrong is expensive and one model's self-review is not enou
 If the task is a quick one-liner, skip it. The team is overhead until the build is big
 enough to earn it.
 
+**Say which mode you want up front.** `light` runs one audit pass, for lower-stakes work.
+`deep` (the default for anything that ships) loops steps 4 to 6 to a clean convergence pass.
+If you wired this as an agent command or slash command, that is literally `/yourcommand light`
+or `/yourcommand deep`; if you are just prompting an assistant directly, say "light mode" or
+"deep mode" in the brief. Nothing reads your mind otherwise, and light mode silently run on a
+client deliverable is how a ship-blocker gets through.
+
 ## Do you have to use specific models?
 
 No. The only hard rule is **cross-family**: the critics must be a different model family
