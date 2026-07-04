@@ -8,6 +8,14 @@ actually signed off on the exact file you are about to ship. It is a method firs
 reference script second: the loop design below is model-agnostic, and `glm_fanout.py` is
 just one cheap way to run the drafting step.
 
+<img src="docs/loop-diagram.svg" alt="The crosscheck loop drawn as two feedback cycles: a direction loop between Draft and the Direction gate, and a convergence loop between Critics and the Lead" width="100%" />
+
+The loop is two cycles, not a straight pipeline: a **direction loop** (structural feedback sends
+the draft back before critics ever burn a round) and a **convergence loop** (the lead and critics
+go back and forth until both approve the exact same file). Steps read as a numbered list below
+because that is the easiest way to describe them once, not because the run only goes through them
+once.
+
 ## What it's for
 
 Any build where being wrong is expensive and one model's self-review is not enough:
@@ -69,9 +77,15 @@ highest-priority finding.
    critic errors or is unavailable, substitute another family or report the run as
    unverified. Never let a single-family run pass silently as converged.
 5. **Lead judges and loops to convergence.** The lead applies the real findings and
-   re-submits. **The loop is not done until both critics approve the same unchanged final.**
-   Any edit after a clean pass voids that pass, so the file you ship is one the critics
-   actually saw, not one edited past their last look.
+   re-submits the WHOLE file, not just the changed section, so critics catch internal
+   inconsistencies an edit leaves behind (a claim that referenced data another round just
+   removed, a stat that no longer matches an updated table), not only the specific finding
+   that triggered the edit. **The loop is not done until both critics approve the same
+   unchanged final.** Any edit after a clean pass voids that pass, so the file you ship is
+   one the critics actually saw, not one edited past their last look. What this does not
+   catch: a version that is internally consistent but has drifted from the framing or
+   emphasis you actually wanted, that is a taste failure, not a correctness failure, which
+   is what the direction gate above exists to catch instead.
 6. **Requirement ledger.** One row per must-have, each marked proved / weak / missing /
    contradicted before ship. This catches the gap critics cannot see: the must-have nobody
    put on the page. On for correctness-critical builds (RFPs, anything with a spec).
