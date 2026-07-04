@@ -135,6 +135,11 @@ Every run opens by printing the roster (who sits in which seat, and any degradat
 critic down or the direction gate skipped), so a mis-seating is visible in line one, not in
 the bill.
 
+The final report should close the loop the other way: one line on how many audit rounds ran
+and which seat did the most work. This is not a new tracking system, it's just surfacing what
+already happened, so the seat-economics theory above gets checked against real runs instead of
+staying a paper assumption.
+
 ## glm_fanout.py
 
 A reference implementation of step 1: parallel draft fan-out against any
