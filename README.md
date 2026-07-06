@@ -34,6 +34,40 @@ or `/yourcommand deep`; if you are just prompting an assistant directly, say "li
 "deep mode" in the brief. Nothing reads your mind otherwise, and light mode silently run on a
 client deliverable is how a ship-blocker gets through.
 
+## The tier gate: route by verifiability, not stakes
+
+The expensive failure mode in production was not skipping the loop. It was running the
+full loop on small edits the lead could have proven correct with a script. The fix is a
+three-tier gate in front of the loop, and one routing rule:
+
+**Tier is chosen by verifiability and edit size, never by how high-stakes the work
+feels.** A one-word fix on a client artifact is still Tier 0 if a script proves it.
+Stakes alone never justify the loop; only "I cannot verify this myself" does.
+
+| Tier | Trigger | What runs |
+|---|---|---|
+| 0 · solo-verify | the change is deterministic and provable with a script (grep, totals assert, numeric parity, render check) | the lead alone, who then shows the check's output |
+| 1 · single cross-check (= `light`) | a judgment call, or many figures, but bounded scope | one audit round, both critics, no loop |
+| 2 · deep loop (= `deep`) | the ship gate on the frozen final | the full loop, to a clean convergence pass |
+
+Tier 0 has the same bright line as bulk hands: state the mechanical pass/fail check
+BEFORE making the edit, run it after, show the output. "I feel fast enough" is not
+Tier 0; "the grep returns zero and the totals assert passes" is. If you cannot name the
+check up front, it is not Tier 0.
+
+Tier 1 keeps the cross-family rule: one round of both critics, never a single critic
+alone, so the cheap tier cannot pass a single-family blind spot.
+
+**One Tier 2 per deliverable, fired by the freeze.** The deep loop runs when the artifact
+is declared frozen for ship, not once per edit. Mid-build edits route Tier 0 or 1. An
+edit landed after the clean pass still voids it. What Tier 2 can never be skipped for:
+whatever is not solo-verifiable at ship time — cross-source reconciliation, translation
+fidelity, narrative overclaims. In our production runs, every critic catch that earned
+its cost was in that class; every wasted loop was on a script-provable edit.
+
+Default when the caller says nothing: the lowest tier the change's verifiability allows,
+stated in one line with the check before running. Unsure between tiers, go one up.
+
 ## Do you have to use specific models?
 
 No. The only hard rule is **cross-family**: the critics must be a different model family
@@ -99,7 +133,9 @@ highest-priority finding.
 7. **Honesty guard.** A run that hit its round cap, stalled in a two-round stalemate, or
    errored out is reported as exactly that. It is never relabelled "approved."
 8. **Gate trivial work back to solo.** If the task is a one-liner, the team is overhead.
-   Run the loop only when the build is big enough to earn it.
+   Run the loop only when the build is big enough to earn it. The tier gate above is the
+   full version of this rule: solo is fine whenever a script can prove the edit, and the
+   proof is shown, not assumed.
 
 ## Why it works
 
@@ -225,7 +261,9 @@ decision packet to your premium model; more than once per run means reseat),
 `requireConvergence` (both critics approve the same unchanged final), `requirementLedger`
 (on for correctness-critical builds), `stopOn` (clean pass, two-round stalemate, or cap,
 never an errored run reported as clean), `maxAuditRounds`, `mode` (`light` is one audit
-pass, `deep` loops to clean).
+pass, `deep` loops to clean), `tier` (0 / 1 / 2, default auto: the lowest tier the
+change's verifiability allows; Tier 0 requires naming the mechanical check up front and
+showing its output; one Tier 2 per deliverable, fired by the freeze declaration).
 
 ## Status
 
