@@ -44,6 +44,8 @@ three-tier gate in front of the loop, and one routing rule:
 feels.** A one-word fix on a client artifact is still Tier 0 if a script proves it.
 Stakes alone never justify the loop; only "I cannot verify this myself" does.
 
+<img src="docs/tier-gate.svg" alt="The tier gate drawn as a decision flow: can a script prove the edit? Yes goes to Tier 0 solo-verify. No leads to: is this the frozen final? No goes to Tier 1, one audit round. Yes goes to Tier 2, the deep loop." width="100%" />
+
 | Tier | Trigger | What runs |
 |---|---|---|
 | 0 · solo-verify | the change is deterministic and provable with a script (grep, totals assert, numeric parity, render check) | the lead alone, who then shows the check's output |
