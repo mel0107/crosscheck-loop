@@ -186,6 +186,16 @@ A worked example spanning three families:
 If you only have two families total, run one critic per family and you still get the
 cross-family catch.
 
+**Mixed-family drafting.** The drafter seat does not have to be one model. Split the SAME
+variant count across two cheap families (say 3 + 2), not double it: drafting is near-free,
+but the lead reading drafts is not, so the win is diversity of angles, not volume. One
+family's N variants tend to cluster around the same instincts; two families genuinely
+diverge. Run the fan-out script once per provider (swap the endpoint env var), or use a
+flat-rate CLI you are already signed into for the second family's share. One caveat to
+carry: if the second drafter family is the same as your cross-family critic, that critic
+is auditing its own family's drafts on those sections, so the lead's synthesis and the
+second critic carry the independence there.
+
 **The escalation seat now exists as a platform primitive.** Anthropic's advisor tool
 (beta, Claude API) lets an executor model consult a stronger model mid-generation,
 server-side, in one request: exactly this seat, productized. If you run the loop via the
