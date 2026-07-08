@@ -173,6 +173,14 @@ A worked example spanning three families:
 If you only have two families total, run one critic per family and you still get the
 cross-family catch.
 
+**The escalation seat now exists as a platform primitive.** Anthropic's advisor tool
+(beta, Claude API) lets an executor model consult a stronger model mid-generation,
+server-side, in one request: exactly this seat, productized. If you run the loop via the
+API, use it instead of hand-rolling the consult. Two boundaries carry over unchanged: the
+advice informs the lead, it is never the verdict of record, and an advisor does NOT
+replace the critics. An advisor is same-family planning help and shares the builder's
+blind spots; the adversarial cross-family catch is a different job and stays mandatory.
+
 ## Seat economics
 
 Token spend should follow judgment density, not volume. Three profiles:
