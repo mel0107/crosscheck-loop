@@ -1,12 +1,17 @@
 # crosscheck-loop
 
-A multi-model build loop with an adversarial audit and a hard stop condition.
+A multi-model build loop with an adversarial audit and a hard stop condition, for
+high-stakes **business deliverables**: proposals, pitches, RFP responses, plans, reports,
+client analyses.
 
-One model is too easy on itself. crosscheck splits a build across model families so the
+Code has compilers, tests, and CI: deterministic verifiers that catch a wrong build before
+it ships. A proposal has none of that. The only check on a wrong number, a fabricated
+citation, or a confident overclaim is another set of eyes, and one model reviewing its own
+work is too easy on itself. crosscheck splits the build across model families so the
 builder is never its own judge, then refuses to call the job done until the critics have
-actually signed off on the exact file you are about to ship. It is a method first and a
-reference script second: the loop design below is model-agnostic, and `glm_fanout.py` is
-just one cheap way to run the drafting step.
+signed off on the exact file you are about to ship. It is a method first and a reference
+script second: the loop design below is model-agnostic, and `glm_fanout.py` is just one
+cheap way to run the drafting step.
 
 <img src="docs/loop-diagram.svg" alt="The crosscheck loop drawn as two feedback cycles: a direction loop between Draft and the Direction gate, and a convergence loop between Critics and the Lead" width="100%" />
 
@@ -18,11 +23,19 @@ once.
 
 ## What it's for
 
-Any build where being wrong is expensive and one model's self-review is not enough:
+Deliverables where being wrong is expensive, no automated verifier exists, and one model's
+self-review is not enough:
 
-- A document or deck that has to be correct (a proposal, a report, an RFP response).
-- A code change where a regression in the untouched parts would slip past a prose review.
-- A data-heavy artifact where numbers have to reconcile and sources have to hold up.
+- A proposal, pitch, or RFP response where a wrong figure or an overclaim costs the deal.
+- A report or plan whose claims must trace to real sources (the loop's fabrication hunt
+  is aimed at exactly this).
+- A data-heavy artifact (dashboard, analysis) where numbers have to reconcile across
+  sections and sources have to hold up.
+
+It is NOT primarily a coding tool. Code already has cheap deterministic verification
+(compilers, tests, CI, linters); run those first and reach for a review loop only on top.
+The one code-shaped case the loop covers well is the artifact that IS the deliverable, a
+built HTML deck or dashboard, where a render critic catches what prose review misses.
 
 If the task is a quick one-liner, skip it. The team is overhead until the build is big
 enough to earn it.
