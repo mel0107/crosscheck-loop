@@ -19,6 +19,12 @@ into specific model vendors.
   method change. The loop is family-agnostic on purpose.
 - Secrets, keys, or `.env` files in the diff.
 
+## Agent contributors
+
+AI agents (Codex, OpenClaw, Claude, or any platform) are welcome contributors and follow
+the same norms plus the workflow contract in `AGENTS.md`: branch plus PR (never a direct
+push to `main`), vendor-neutral content, no private context in diffs.
+
 ## Sync note (for the maintainer)
 
 The public repo is canonical for the **loop method**. Method changes originate here and are
