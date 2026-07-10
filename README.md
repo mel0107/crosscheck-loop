@@ -257,14 +257,37 @@ The loop needs at least two adversarial critics on a different family than the b
 proven setup:
 
 - A CLI coding agent (e.g. an OpenAI-family `codex exec`-style tool) as the technical critic.
-  Copy the artifact's **whole folder** (HTML plus `assets/` and any locally referenced dirs)
-  into a temp dir before review: a temp dir so it cannot touch the real file, the whole folder
-  so local assets resolve on headless render (copying only the HTML false-flags images as
-  missing).
+  Copy the scoped artifact into a unique isolated run directory before review. For an HTML
+  deliverable, copy the **whole folder** (HTML plus `assets/` and any locally referenced dirs)
+  so local assets resolve on headless render. Keep large inputs in files, wait for the actual
+  critic process, and capture progress, errors, and the final verdict separately.
 - A fresh-eyes subagent on a third family, told to find what is wrong and return numbered
   findings with verbatim lines and fixes.
 
 Swap in whatever critics you have, as long as they are adversarial and cross-family.
+
+## Tuning note: wait for the critic, not the launcher
+
+A production loop misdiagnosed several successful reviews as stalls. A background launcher had
+returned while the critic kept working, and one growing file mixed progress traces, tool output,
+and the final answer. The large artifact was not the failure: a multi-megabyte review completed
+normally after the loop had already called it stalled.
+
+The durable fix is a transport contract around every CLI critic:
+
+- **Keep content in files.** Put the artifact and long brief in the isolated run directory and
+  send only a short control instruction through the process input. Do not interpolate a large
+  document into a shell command.
+- **Wait for the real child.** Run the critic in the foreground, or retain its actual process
+  handle and wait for it. A launcher shell's exit code is not the critic's exit code, and silence
+  before the declared timeout is not a stall.
+- **Separate the channels.** Store progress events, stderr, and the final structured verdict in
+  different files. Never treat a combined transcript as the answer.
+- **Fail closed.** Require a zero child exit, a parseable final verdict, and a digest matching
+  the unchanged reviewed snapshot. When the tool exposes structured lifecycle events, also
+  require its completion event and reject any failure event.
+- **Bound and clean up.** Cap captured logs while the process is running. On timeout or
+  cancellation, terminate the whole process group so critic-spawned tools are not orphaned.
 
 ## Tuning note: compiled tool output is a draft, not a verdict
 
