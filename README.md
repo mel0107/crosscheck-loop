@@ -73,6 +73,11 @@ check up front, it is not Tier 0.
 Tier 1 keeps the cross-family rule: one round of both critics, never a single critic
 alone, so the cheap tier cannot pass a single-family blind spot.
 
+Tier 1 stops after its single round. If that round caused edits, the shipped version is
+one no critic re-checked, so report "changed, fixes unreviewed" rather than "clean"; do
+not add a second round. Wanting the fixes re-audited is a signal the work was Tier 2 all
+along, not that Tier 1 grew a loop.
+
 **One Tier 2 per deliverable, fired by the freeze.** The deep loop runs when the artifact
 is declared frozen for ship, not once per edit. Mid-build edits route Tier 0 or 1. An
 edit landed after the clean pass still voids it. What Tier 2 can never be skipped for:
