@@ -95,6 +95,26 @@ than the builder, because a same-family critic shares the builder's blind spots.
 vendors you use is entirely up to whatever API keys you already have. The structure is the
 value, not the brand of model in each seat.
 
+## First run: declare your seats
+
+Before the first run, write down which families you actually have in a `seats.json` next
+to wherever you wired the loop (template: `examples/seats.example.json`). Probe your
+machine for it: which CLIs are installed and signed in, which keys are live in your env.
+Then have the lead seat every roster **from that file, never from memory**. The failure
+this prevents is real: in production the lead linked one family it happened to remember
+and skipped another whose key was live on the machine, until the human reminded it. A
+model's recollection of your setup is not your setup.
+
+Two rules the file encodes:
+
+- **No seat is tied to a brand.** Every seat maps to whatever you have; do not let a tool
+  assume your most premium model must sit somewhere. In particular the escalation seat is
+  optional: leaving it empty does not break the loop, a stalemate is then just reported
+  honestly instead of escalated.
+- **Re-probe on change.** A new key, a newly installed CLI, or a seat failing mid-run all
+  mean regenerate the file, not wait to be reminded. The file holds availability booleans
+  only, never key values, so it is safe to keep next to the config.
+
 ## Ground rule: no fabrication
 
 This sits above the whole loop. Every fact, number, quote, citation, date, and named entity

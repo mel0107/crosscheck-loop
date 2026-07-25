@@ -1,0 +1,16 @@
+{
+  "note": "Declare which model families you actually have before the first run. Availability booleans only, never key values. The lead seats every roster from this file, not from memory. Re-generate or edit it when you add a key or a seat fails. Family names are yours to choose; the loop only cares that critic families differ from the builder's.",
+  "families": {
+    "family-a": { "available": true,  "invoke": "the assistant session you are already in" },
+    "family-b": { "available": true,  "invoke": "a CLI coding agent you are signed into (e.g. codex exec)" },
+    "family-c": { "available": true,  "invoke": "an OpenAI-compatible endpoint via glm_fanout.py (CROSSCHECK_API_KEY)" },
+    "family-d": { "available": false, "invoke": "" }
+  },
+  "seat_rules": {
+    "lead": "your flat-rate resident model; keep metered premium models out of this accumulating seat",
+    "drafters": "cheapest capable families, split the variant count across two families when you have them",
+    "cross_family_critic": "any available family that is NOT the builder's; substitute another family or report unverified if it is down",
+    "fresh_eyes": "a second lens; fine on the lead's family, never the only critic",
+    "escalation_consult": "OPTIONAL. Leave empty if you have no premium model or do not want one in the loop: an empty seat means a stalemate is reported honestly instead of escalated. It never blocks a run."
+  }
+}
