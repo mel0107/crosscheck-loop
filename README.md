@@ -293,6 +293,22 @@ The durable fix is a transport contract around every CLI critic:
   require its completion event and reject any failure event.
 - **Bound and clean up.** Cap captured logs while the process is running. On timeout or
   cancellation, terminate the whole process group so critic-spawned tools are not orphaned.
+- **Two timers, not one.** A single flat wall-clock timeout conflates two different failures
+  and eventually kills a healthy deep review (a production loop lost runs to a flat 900s cap
+  while the critic was still streaming findings). Separate them: a wall-clock cap scaled to
+  the review depth (a deep high-reasoning pass legitimately needs multiples of a light one),
+  plus a stall watchdog that fires only after a sustained window of zero child output. A
+  critic still producing output is never killed before the wall cap; a hung child dies at the
+  stall window instead of eating the whole cap. Report the two as distinct statuses, because
+  the operator's fix differs: raise the cap versus relaunch the run.
+- **Feed the stall detector unbuffered.** A buffered read that blocks until a full chunk
+  arrives starves the liveness signal on slow output, and the watchdog then kills a busy
+  critic as "hung". Read whatever bytes are available (e.g. Python's `read1`) and timestamp
+  every arrival; that timestamp, not file growth, is the heartbeat.
+- **Premium seats bill through plans, or sit empty.** When a seat is pinned to a model you
+  access through a flat subscription, invoke it only through that plan's own entry point.
+  Never let an unavailable seat silently re-route to metered API billing: an empty seat is
+  reported honestly (same rule as the optional escalation seat), a surprise bill is not.
 
 ## Tuning note: compiled tool output is a draft, not a verdict
 
