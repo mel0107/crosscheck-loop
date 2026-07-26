@@ -191,7 +191,8 @@ Fill each with any model you have access to; only the boundaries are fixed. Role
 | Seat | Job | Token profile | Hard boundary |
 |---|---|---|---|
 | **Principal (human)** | Gates direction: intent, framing, taste | Scarcest resource in the loop | Their approval never substitutes for the convergence pass |
-| **Lead** | Briefs, judges, builds, enforces the stop | Accumulates the whole session: your largest recurring cost | Judge of record; never skips the critics |
+| **Lead** | Briefs, builds, judges each round, enforces the stop | Accumulates the whole session: your largest recurring cost | Never skips the critics; not the ship verdict on its own build |
+| **Frontier judge (cross-family)** | Ship / fix / rethink at the freeze, on a forked fresh context | One bounded packet per freeze | Different family from the lead; a fix verdict voids the clean pass and loops |
 | **Drafter** | Fans out N variants, or the delta on a modification | High volume, so cheapest capable tier | Never judges, never ships |
 | **Data deputy** | Pulls sources, builds tables, fills the ledger | Bounded per build | Populates, never signs off |
 | **Bulk hands** | Mechanical chores: parse, reformat, dedupe, liveness-check | Many small parallel calls, cheapest tier | Only tasks verifiable by mechanical diff; it transforms, never adjudicates |
@@ -238,13 +239,35 @@ Token spend should follow judgment density, not volume. Three profiles:
 - **Bounded seats** (critics, deputy): they see a packet per round, not the whole session,
   so a strong model here is affordable. Flat-fee CLI tools you already pay for are ideal.
 - **The accumulating seat** (lead): it holds the brief, every draft, every critique, every
-  round. This is your largest recurring cost, so the naive move of putting your most
-  expensive model "in charge" is exactly the wrong economics.
+  round. This is your largest recurring cost, so on metered billing the naive move of
+  putting your most expensive model "in charge" is exactly the wrong economics.
 
-Keep your most expensive model OUT of the resident lead seat. When the loop hits a genuine
-judgment knot the critics stalemated on, send that model a **decision packet**: the specific
-question plus minimal context, single-shot, no loop. If you find yourself consulting it more
-than once per run, that is a signal to reseat, not to keep paying.
+On **metered** billing, keep your most expensive model out of the resident lead seat. When
+the loop hits a genuine judgment knot the critics stalemated on, send that model a
+**decision packet** instead: the specific question plus minimal context, single-shot, no
+loop. If you find yourself consulting it more than once per run, that is a signal to
+reseat, not to keep paying.
+
+**This section is about metered spend, and only metered spend.** If your best model is
+covered by a flat subscription, the accumulation argument disappears: marginal cost in the
+lead seat is zero, so the reasoning inverts and your strongest plan-included model *should*
+lead. Do not let a cost rule keep the best available model out of the orchestrator seat
+when that model is already paid for. Who orchestrates is the operator's call; the loop
+never dictates it. The rule that survives either way is the one in the tuning notes below:
+a premium seat bills through its plan or sits empty, and never silently re-routes to
+metered API billing.
+
+What the loop *does* require, independent of who leads, is that **judgment is cross-family
+at both layers**. The critics must be a different family than the builder (above), and the
+final ship / fix / rethink verdict should not come from the lead alone, because a lead that
+judges its own build is the same self-review trap the loop exists to prevent. Seat a
+**frontier judge** on a different family from the lead, fire it at the freeze rather than
+every round (a frontier judge on every mid-build round is exactly the spend the tier gate
+prevents), and **fork it a fresh, higher-level context**: the stated goal and the finished
+artifact, not the lead's accumulated conversation. Context-clean skepticism is the whole
+point, and a judge that inherits the lead's assumptions inherits its blind spots too. Its
+verdict is not a rubber stamp at the end: feed it back into the convergence loop like any
+critic round, and if it says fix or rethink, the clean pass is void and you loop again.
 
 Every run opens by printing the roster (who sits in which seat, and any degradation, e.g. a
 critic down or the direction gate skipped), so a mis-seating is visible in line one, not in
