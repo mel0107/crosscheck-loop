@@ -148,8 +148,13 @@ highest-priority finding.
    if the principal is not available, proceed to the critics and flag the skipped gate in the
    final report. Direction feedback that lands after a clean convergence pass voids that pass
    like any other edit. Skip the gate on small modifications and quick passes.
-4. **Adversarial critics, cross-family.** At least two critics on a *different model family*
-   than the builder, told to break the work, not bless it. Cross-family matters: a critic
+4. **Argument first, then correctness.** Before any correctness critic runs, the argument
+   critic (see its own section below) judges whether the deliverable argues anything and
+   returns a keep / merge / cut spine; the lead restructures, THEN releases the build to the
+   correctness critics. Reconciling figures inside a section that later gets cut is the
+   expensive kind of waste, and it is exactly what a correctness-only loop spends its rounds
+   on. Then: **adversarial critics, cross-family.** At least two critics on a *different
+   model family* than the builder, told to break the work, not bless it. Cross-family matters: a critic
    from the same family as the builder shares its blind spots. Task them explicitly to flag
    any number, quote, citation, or named entity with no traceable source as a suspected
    fabrication, the highest-priority finding class. On code-bearing builds, give one critic a
@@ -193,6 +198,7 @@ Fill each with any model you have access to; only the boundaries are fixed. Role
 | **Principal (human)** | Gates direction: intent, framing, taste | Scarcest resource in the loop | Their approval never substitutes for the convergence pass |
 | **Lead** | Briefs, builds, judges each round, enforces the stop | Accumulates the whole session: your largest recurring cost | Never skips the critics; not the ship verdict on its own build |
 | **Frontier judge (cross-family)** | Ship / fix / rethink at the freeze, on a forked fresh context | One bounded packet per freeze | Different family from the lead; a fix verdict voids the clean pass and loops |
+| **Argument critic (cross-family)** | Judges whether the deliverable argues anything, BEFORE the correctness critics run | One bounded packet, first audit pass | Figures are out of its scope (a numeric finding is a failed response); proposes a spine, never edits |
 | **Drafter** | Fans out N variants, or the delta on a modification | High volume, so cheapest capable tier | Never judges, never ships |
 | **Data deputy** | Pulls sources, builds tables, fills the ledger | Bounded per build | Populates, never signs off |
 | **Bulk hands** | Mechanical chores: parse, reformat, dedupe, liveness-check | Many small parallel calls, cheapest tier | Only tasks verifiable by mechanical diff; it transforms, never adjudicates |
@@ -229,6 +235,45 @@ API, use it instead of hand-rolling the consult. Two boundaries carry over uncha
 advice informs the lead, it is never the verdict of record, and an advisor does NOT
 replace the critics. An advisor is same-family planning help and shares the builder's
 blind spots; the adversarial cross-family catch is a different job and stays mandatory.
+
+## The argument critic: accuracy is not the product
+
+A production ship gate ran three correctness critics over three rounds and returned about
+forty findings: wrong figures, contradictions, unsupported claims, voice tells. The client's
+actual reaction to the same artifact was none of that: "feels pieced together", "not readable
+for leadership". Both were right. **An accurate deliverable can still be useless**, and no
+seat in a correctness-only loop is ever asked the question the buyer is answering.
+
+So one seat asks it, first, before any correctness round. A frontier model on a family
+different from the builder reads only the visible copy in reading order plus the section
+structure (never the data files: numbers are a temptation to retreat into counting), and runs
+six tests, each producing a specific defect rather than a vibe:
+
+1. **Verdict chain.** Read the section headlines alone, in order, as one paragraph. Do they
+   form an argument that arrives somewhere? Every headline that is a label or an instruction
+   rather than a claim is a defect.
+2. **Removal.** What breaks if this section is deleted? Nothing = a catalogue entry.
+3. **Decision.** Which buyer decision does each section change? None = decoration; two
+   sections on the same decision = merge candidates.
+4. **Handover.** Can the buyer present section N without having read N-1? If always yes, the
+   deck has adjacency, not sequence.
+5. **Escalation.** Does each section narrow toward an action, or restart at observation?
+   Restarting is the signature of stitched work.
+6. **The missing spine.** If this deck is all the buyer reads, what do they still not know?
+   Absence is what critics are worst at.
+
+Output is a verdict (ONE ARGUMENT / STITCHED / NO ARGUMENT) plus a proposed spine: the
+argument as it currently reads in one paragraph, the argument it should make, keep / merge /
+cut / rewrite per section with the decision each serves, and sequence changes. It proposes a
+spine, never copy, and never edits. Guard its two failure modes in the brief: figures are out
+of scope and a numeric finding is a failed response (a model asked to judge argument drifts
+to counting because counting is easier), and when a real reader reaction exists, pass it in
+unattributed ("a reader said this feels pieced together; find out whether they are right") so
+the critic starts from suspicion rather than from the table of contents.
+
+Position is the economics: run first, it shrinks the surface every correctness critic has to
+cover; run last, it is pure added cost. The freeze verdict then covers both axes: a judge
+that only certifies accuracy has answered half the question.
 
 ## The judge panel: the ship gate is not the lead's call
 
