@@ -115,6 +115,19 @@ Two rules the file encodes:
   mean regenerate the file, not wait to be reminded. The file holds availability booleans
   only, never key values, so it is safe to keep next to the config.
 
+## Ground rule: seats are processes, not personas
+
+Every seat's output must come from a genuinely separate invocation: a spawned subagent, a
+CLI one-shot, a fresh forked context, a script run. Some assistants, asked to run a loop
+like this, skip the dispatch and write the critics' findings themselves, inline, in their
+own voice ("as the cross-family critic, I find..."). That is self-review wearing a costume,
+it reintroduces the exact blind-spot trap the loop exists to prevent, and any convergence
+pass it produces is meaningless. Treat a role-played seat as an errored seat: the run is
+unverified, never converged. A host that genuinely cannot dispatch a seat leaves it empty
+and says so in the roster. Enforce it cheaply through the report: each seat's line names
+its invocation artifact (a run directory, an output file, a session transcript), so a seat
+with no artifact is visibly a seat that never ran.
+
 ## Ground rule: no fabrication
 
 This sits above the whole loop. Every fact, number, quote, citation, date, and named entity
