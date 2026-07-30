@@ -230,6 +230,30 @@ advice informs the lead, it is never the verdict of record, and an advisor does 
 replace the critics. An advisor is same-family planning help and shares the builder's
 blind spots; the adversarial cross-family catch is a different job and stays mandatory.
 
+## The judge panel: the ship gate is not the lead's call
+
+Mid-build rounds are judged by the lead against the critics. The freeze is different: the
+version that ships is decided by a panel, never by the lead alone that built it. Three
+voices:
+
+1. **The head judge: your most capable plan-billed model, and it seats itself.** At every
+   ship gate, unasked. The failure this kills is real: in production the strongest
+   available model sat in a critic chair for two consecutive ship gates because nothing
+   forced it into the judge chair and the human had not named it. Like the frontier judge
+   below, it reads the review packet fresh (a one-shot invocation on a forked context, not
+   the lead's accumulated conversation), which is what makes it a judge rather than the
+   lead grading its own homework, even when the same model id also holds the lead seat.
+2. **The cross-family frontier judge** (the seat above), so the final verdict does not
+   share the builder's family blind spots.
+3. **The human principal**, who owns direction and taste.
+
+The auto-seat test is the billing path, not the brand: a model qualifies while its
+invocation bills a flat plan you already pay for. Metered-API models never auto-seat as
+judges. If no plan-billed judge exists, that seat sits empty, the lead judges, and the
+roster says so; an empty seat reported honestly beats a surprise bill (same rule as the
+escalation seat). Any judge's fix or rethink verdict voids the clean pass and loops, same
+as a critic round.
+
 ## Seat economics
 
 Token spend should follow judgment density, not volume. Three profiles:
@@ -352,6 +376,12 @@ The durable fix is a transport contract around every CLI critic:
   access through a flat subscription, invoke it only through that plan's own entry point.
   Never let an unavailable seat silently re-route to metered API billing: an empty seat is
   reported honestly (same rule as the optional escalation seat), a surprise bill is not.
+- **Silence the critic's side channels.** A review is single-agent by design; run the critic
+  CLI with its unrelated agentic features disabled (collaboration and sub-agent tools misfire
+  inside an isolated run and logged an internal ERROR line on every production pass while the
+  reviews completed fine). Classify whatever stderr remains against a known-benign list and
+  surface only the notable lines. An operator who sees a benign internal error relayed as a
+  failure learns to ignore errors, and alarm fatigue is not affordable at a ship gate.
 
 ## Tuning note: compiled tool output is a draft, not a verdict
 
