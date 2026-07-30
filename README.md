@@ -433,6 +433,25 @@ The durable fix is a transport contract around every CLI critic:
   surface only the notable lines. An operator who sees a benign internal error relayed as a
   failure learns to ignore errors, and alarm fatigue is not affordable at a ship gate.
 
+## Tuning note: the loop has a clock
+
+A ship gate that runs for hours is answering a question nobody asked. The loop earns its
+cost through the cross-family catch and the confirmation pass, not through volume, and
+rounds past the first buy sharply diminishing catches. Three rules keep a deep gate to
+roughly an hour of wall clock:
+
+- **Re-audit is targeted, not full-bench.** After the first round, re-run only the seats
+  whose findings actually drove edits. A critic whose round produced nothing acted on has
+  nothing new to confirm.
+- **Deep thinking is for discovery.** Run the first pass at your critic's highest reasoning
+  effort; run confirmation passes one notch down. Verifying that fixes landed does not need
+  the same depth as finding what was broken.
+- **The budget is a stop, not a stretch goal.** Crossed anyway: finish the in-flight pass,
+  stop, and report honestly, verified versus unverified plus the open findings as a punch
+  list for the principal. An hours-long gate is a symptom that the structure was wrong
+  (the argument critic's job), the tier was wrong, or seats are duplicating work. More
+  rounds are not the fix for any of those.
+
 ## Tuning note: compiled tool output is a draft, not a verdict
 
 Deterministic compilers are great drafting accelerants: a chart compiler such as
