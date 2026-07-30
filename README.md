@@ -140,6 +140,18 @@ explicitly requested, and is labelled as synthetic so it is never mistaken for r
 drafters are told this in the brief, and the critics hunt unsupported claims as the
 highest-priority finding.
 
+Half of grounding is the citation, and models under-cite by default: drafters treat
+citations as clutter and silently drop fields. So the contract is explicit. Every sourced
+claim or summary carries its citation **at the point of use**, and a citation is complete
+only when it names the source, the author or account when one exists, the publication date,
+a locator (URL, or report title plus section, or the query id for a data platform), and one
+line on what the source actually says in its own context, so a reader can judge whether the
+claim survives where it came from. A citation missing a field is the same defect class as a
+wrong number, a bare source list at the end with no in-place anchors does not count, and a
+claim that cannot be cited completely ships as flagged-unverified or not at all. Put the
+format in the brief as part of the copy contract, and task the critics to audit citation
+completeness alongside fabrication.
+
 ## The loop
 
 1. **Draft (worker, fanned out).** A fast, cheap model drafts N variants in parallel from
