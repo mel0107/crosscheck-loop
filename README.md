@@ -198,7 +198,7 @@ Fill each with any model you have access to; only the boundaries are fixed. Role
 | **Principal (human)** | Gates direction: intent, framing, taste | Scarcest resource in the loop | Their approval never substitutes for the convergence pass |
 | **Lead** | Briefs, builds, judges each round, enforces the stop | Accumulates the whole session: your largest recurring cost | Never skips the critics; not the ship verdict on its own build |
 | **Frontier judge (cross-family)** | Ship / fix / rethink at the freeze, on a forked fresh context | One bounded packet per freeze | Different family from the lead; a fix verdict voids the clean pass and loops |
-| **Argument critic (cross-family)** | Judges whether the deliverable argues anything, BEFORE the correctness critics run | One bounded packet, first audit pass | Figures are out of its scope (a numeric finding is a failed response); proposes a spine, never edits |
+| **Argument critic (frontier, fresh fork)** | Judges whether the deliverable argues anything, BEFORE the correctness critics run | One bounded packet, first audit pass | Figures are out of its scope (a numeric finding is a failed response); proposes a spine, never edits |
 | **Drafter** | Fans out N variants, or the delta on a modification | High volume, so cheapest capable tier | Never judges, never ships |
 | **Data deputy** | Pulls sources, builds tables, fills the ledger | Bounded per build | Populates, never signs off |
 | **Bulk hands** | Mechanical chores: parse, reformat, dedupe, liveness-check | Many small parallel calls, cheapest tier | Only tasks verifiable by mechanical diff; it transforms, never adjudicates |
@@ -244,10 +244,15 @@ actual reaction to the same artifact was none of that: "feels pieced together", 
 for leadership". Both were right. **An accurate deliverable can still be useless**, and no
 seat in a correctness-only loop is ever asked the question the buyer is answering.
 
-So one seat asks it, first, before any correctness round. A frontier model on a family
-different from the builder reads only the visible copy in reading order plus the section
-structure (never the data files: numbers are a temptation to retreat into counting), and runs
-six tests, each producing a specific defect rather than a vibe:
+So one seat asks it, first, before any correctness round. Seat your most capable plan-billed
+model here: argument judgment is intelligence-bound, and unlike the correctness critics this
+seat does not require a different family from the builder. What de-biases it is the **fresh
+fork**, the same mechanism as the head judge: it reads only the visible copy in reading order
+plus the section structure, never the data files (numbers are a temptation to retreat into
+counting) and never the lead's accumulated conversation. Prefer a different family when
+capability ties; when the seat does share the builder's family, say so in the roster, and the
+cross-family voice on the freeze panel covers the argument axis. It runs six tests, each
+producing a specific defect rather than a vibe:
 
 1. **Verdict chain.** Read the section headlines alone, in order, as one paragraph. Do they
    form an argument that arrives somewhere? Every headline that is a label or an instruction
