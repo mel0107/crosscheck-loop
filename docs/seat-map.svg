@@ -1,0 +1,105 @@
+<svg width="940" height="704" viewBox="0 0 940 704" xmlns="http://www.w3.org/2000/svg" role="img" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif">
+<title>Seat map: who sits where, and the boundary each seat cannot cross</title>
+<desc>Four bands of seats. Resident seats that run every round: the lead, the human principal, and a break-glass escalation consult. Volume seats on the cheapest capable flat or free billing: drafter, bulk tagger, bulk hands, data deputy. Bounded critic seats receiving a packet per round: argument critic, cross-family critic, fresh-eyes critic, language critic for translated builds. Freeze-only seats forming the judge panel: head judge, cross-family frontier judge, and the principal again.</desc>
+<rect x="0" y="0" width="940" height="704" fill="#FFFFFF"/>
+
+<!-- band 1: resident seats -->
+<text x="40" y="42" font-size="12" letter-spacing="1.5" fill="#8A8880">EVERY ROUND · RESIDENT SEATS</text>
+
+<rect x="40" y="56" width="280" height="100" rx="4" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="56" y="82" font-size="14" font-weight="600" fill="#712B13">Lead</text>
+<text x="56" y="104" font-size="11" fill="#712B13">briefs, builds, judges each round</text>
+<text x="56" y="120" font-size="11" fill="#993C1D">accumulates the whole session; never</text>
+<text x="56" y="136" font-size="11" fill="#993C1D">the ship verdict on its own build</text>
+
+<rect x="340" y="56" width="280" height="100" rx="4" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text x="356" y="82" font-size="14" font-weight="600" fill="#3C3489">Principal (human)</text>
+<text x="356" y="104" font-size="11" fill="#3C3489">gates direction: intent, framing, taste</text>
+<text x="356" y="120" font-size="11" fill="#534AB7">approval never substitutes for the</text>
+<text x="356" y="136" font-size="11" fill="#534AB7">convergence pass</text>
+
+<rect x="640" y="56" width="260" height="100" rx="4" fill="#FFFFFF" stroke="#8A8880" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="656" y="82" font-size="14" font-weight="600" fill="#444441">Escalation consult</text>
+<text x="656" y="104" font-size="11" fill="#444441">one-shot packet on a stalemated knot</text>
+<text x="656" y="120" font-size="11" fill="#5F5E5A">break-glass; advice to the lead,</text>
+<text x="656" y="136" font-size="11" fill="#5F5E5A">never a verdict of record</text>
+
+<!-- band 2: volume seats -->
+<text x="40" y="200" font-size="12" letter-spacing="1.5" fill="#8A8880">VOLUME SEATS · CHEAPEST CAPABLE, FLAT OR FREE BILLING</text>
+
+<rect x="40" y="214" width="208" height="100" rx="4" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="54" y="240" font-size="14" font-weight="600" fill="#444441">Drafter</text>
+<text x="54" y="262" font-size="11" fill="#444441">fans out N variants from one</text>
+<text x="54" y="278" font-size="11" fill="#444441">brief, mixed families for range</text>
+<text x="54" y="294" font-size="11" fill="#5F5E5A">never judges, never ships</text>
+
+<rect x="268" y="214" width="208" height="100" rx="4" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="282" y="240" font-size="14" font-weight="600" fill="#444441">Bulk tagger</text>
+<text x="282" y="262" font-size="11" fill="#444441">per-item judgment at volume:</text>
+<text x="282" y="278" font-size="11" fill="#444441">tags, sentiment, first-pass coding</text>
+<text x="282" y="294" font-size="11" fill="#5F5E5A">lead spot-checks; never ships</text>
+
+<rect x="496" y="214" width="208" height="100" rx="4" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="510" y="240" font-size="14" font-weight="600" fill="#444441">Bulk hands</text>
+<text x="510" y="262" font-size="11" fill="#444441">many small mechanical chores,</text>
+<text x="510" y="278" font-size="11" fill="#444441">pass/fail check stated up front</text>
+<text x="510" y="294" font-size="11" fill="#5F5E5A">transforms, never adjudicates</text>
+
+<rect x="724" y="214" width="208" height="100" rx="4" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="738" y="240" font-size="14" font-weight="600" fill="#444441">Data deputy</text>
+<text x="738" y="262" font-size="11" fill="#444441">pulls sources, builds tables,</text>
+<text x="738" y="278" font-size="11" fill="#444441">fills the requirement ledger</text>
+<text x="738" y="294" font-size="11" fill="#5F5E5A">populates, never signs off</text>
+
+<!-- band 3: bounded critic seats -->
+<text x="40" y="358" font-size="12" letter-spacing="1.5" fill="#8A8880">BOUNDED CRITIC SEATS · A PACKET PER ROUND, TOLD TO BREAK IT</text>
+
+<rect x="40" y="372" width="208" height="100" rx="4" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="54" y="398" font-size="14" font-weight="600" fill="#085041">Argument critic</text>
+<text x="54" y="420" font-size="11" fill="#085041">does it argue anything? runs</text>
+<text x="54" y="436" font-size="11" fill="#085041">first, on a fresh frontier fork</text>
+<text x="54" y="452" font-size="11" fill="#0F6E56">proposes a spine, never edits</text>
+
+<rect x="268" y="372" width="208" height="100" rx="4" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="282" y="398" font-size="14" font-weight="600" fill="#085041">Critic 1 (cross-family)</text>
+<text x="282" y="420" font-size="11" fill="#085041">adversarial audit on a family</text>
+<text x="282" y="436" font-size="11" fill="#085041">different from the builder</text>
+<text x="282" y="452" font-size="11" fill="#0F6E56">down = substitute or unverified</text>
+
+<rect x="496" y="372" width="208" height="100" rx="4" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="510" y="398" font-size="14" font-weight="600" fill="#085041">Critic 2 (fresh eyes)</text>
+<text x="510" y="420" font-size="11" fill="#085041">craft, voice, gaps; a third family</text>
+<text x="510" y="436" font-size="11" fill="#085041">beats stronger same-family</text>
+<text x="510" y="452" font-size="11" fill="#0F6E56">never the only critic</text>
+
+<rect x="724" y="372" width="208" height="100" rx="4" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="738" y="398" font-size="14" font-weight="600" fill="#085041">Language critic</text>
+<text x="738" y="420" font-size="11" fill="#085041">translated builds only: native in</text>
+<text x="738" y="436" font-size="11" fill="#085041">the target language, not the drafter</text>
+<text x="738" y="452" font-size="11" fill="#0F6E56">tuned text re-enters convergence</text>
+
+<!-- band 4: freeze only -->
+<text x="40" y="516" font-size="12" letter-spacing="1.5" fill="#8A8880">FREEZE ONLY · THE JUDGE PANEL DECIDES SHIP / FIX / RETHINK</text>
+
+<rect x="40" y="530" width="280" height="100" rx="4" fill="#FBF3DC" stroke="#96731B" stroke-width="0.5"/>
+<text x="56" y="556" font-size="14" font-weight="600" fill="#6B5210">Head judge</text>
+<text x="56" y="578" font-size="11" fill="#6B5210">most capable plan-billed model,</text>
+<text x="56" y="594" font-size="11" fill="#6B5210">seats itself, unasked, at every freeze</text>
+<text x="56" y="610" font-size="11" fill="#96731B">fresh one-shot, not the lead's context</text>
+
+<rect x="340" y="530" width="280" height="100" rx="4" fill="#FBF3DC" stroke="#96731B" stroke-width="0.5"/>
+<text x="356" y="556" font-size="14" font-weight="600" fill="#6B5210">Cross-family frontier judge</text>
+<text x="356" y="578" font-size="11" fill="#6B5210">a family different from the lead,</text>
+<text x="356" y="594" font-size="11" fill="#6B5210">so the verdict skips its blind spots</text>
+<text x="356" y="610" font-size="11" fill="#96731B">fix or rethink voids the clean pass</text>
+
+<rect x="640" y="530" width="260" height="100" rx="4" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text x="656" y="556" font-size="14" font-weight="600" fill="#3C3489">Principal (human)</text>
+<text x="656" y="578" font-size="11" fill="#3C3489">direction and taste at the gate,</text>
+<text x="656" y="594" font-size="11" fill="#3C3489">the buyer's voice on the panel</text>
+<text x="656" y="610" font-size="11" fill="#534AB7">owns the final call</text>
+
+<!-- footer -->
+<text x="40" y="668" font-size="11" fill="#8A8880">Seats are processes, not personas: every seat is a separate invocation, and a seat with no artifact never ran.</text>
+<text x="40" y="686" font-size="11" fill="#8A8880">Roles pin to tiers, never model IDs: fill each seat with whatever you have, and an empty seat is reported, never silently re-billed.</text>
+</svg>

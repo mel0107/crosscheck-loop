@@ -13,13 +13,14 @@ signed off on the exact file you are about to ship. It is a method first and a r
 script second: the loop design below is model-agnostic, and `glm_fanout.py` is just one
 cheap way to run the drafting step.
 
-<img src="docs/loop-diagram.svg" alt="The crosscheck loop drawn as two feedback cycles: a direction loop between Draft and the Direction gate, and a convergence loop between Critics and the Lead" width="100%" />
+<img src="docs/loop-diagram.svg" alt="The crosscheck loop drawn as three feedback cycles: a direction loop between Draft and the Direction gate, a convergence loop between Critics and the Lead, and a fix or rethink loop from the Judge panel at the freeze back to the Critics" width="100%" />
 
-The loop is two cycles, not a straight pipeline: a **direction loop** (structural feedback sends
-the draft back before critics ever burn a round) and a **convergence loop** (the lead and critics
-go back and forth until both approve the exact same file). Steps read as a numbered list below
-because that is the easiest way to describe them once, not because the run only goes through them
-once.
+The loop is three cycles, not a straight pipeline: a **direction loop** (structural feedback sends
+the draft back before critics ever burn a round), a **convergence loop** (the lead and critics
+go back and forth until both approve the exact same file), and a **freeze loop** (a fix or rethink
+verdict from the judge panel voids the clean pass and re-enters convergence). Steps read as a
+numbered list below because that is the easiest way to describe them once, not because the run
+only goes through them once.
 
 ## What it's for
 
@@ -218,6 +219,8 @@ ledger + honesty guard) is what keeps a plausible-but-wrong artifact from shippi
 Fill each with any model you have access to; only the boundaries are fixed. Roles pin to
 **tiers, not model IDs**, so a version bump never rots your setup.
 
+<img src="docs/seat-map.svg" alt="Seat map in four bands: resident seats (lead, principal, escalation consult), volume seats (drafter, bulk tagger, bulk hands, data deputy), bounded critic seats (argument critic, cross-family critic, fresh-eyes critic, language critic), and the freeze-only judge panel (head judge, cross-family frontier judge, principal)" width="100%" />
+
 | Seat | Job | Token profile | Hard boundary |
 |---|---|---|---|
 | **Principal (human)** | Gates direction: intent, framing, taste | Scarcest resource in the loop | Their approval never substitutes for the convergence pass |
@@ -225,10 +228,12 @@ Fill each with any model you have access to; only the boundaries are fixed. Role
 | **Frontier judge (cross-family)** | Ship / fix / rethink at the freeze, on a forked fresh context | One bounded packet per freeze | Different family from the lead; a fix verdict voids the clean pass and loops |
 | **Argument critic (frontier, fresh fork)** | Judges whether the deliverable argues anything, BEFORE the correctness critics run | One bounded packet, first audit pass | Figures are out of its scope (a numeric finding is a failed response); proposes a spine, never edits |
 | **Drafter** | Fans out N variants, or the delta on a modification | High volume, so cheapest capable tier | Never judges, never ships |
+| **Bulk tagger** | Per-item judgment at volume: tagging, sentiment coding, first-pass classification over a supplied corpus | High volume, flat or free channel | The lead spot-checks a sample before any tag feeds a shipped figure; never judges, never ships |
 | **Data deputy** | Pulls sources, builds tables, fills the ledger | Bounded per build | Populates, never signs off |
 | **Bulk hands** | Mechanical chores: parse, reformat, dedupe, liveness-check | Many small parallel calls, cheapest tier | Only tasks verifiable by mechanical diff; it transforms, never adjudicates |
 | **Critic 1 (cross-family)** | Adversarial audit on a different family than the builder | Bounded packet per round | Load-bearing; if it is down, substitute a family or report unverified |
 | **Critic 2 (fresh eyes)** | Second lens: craft, voice, gaps | Bounded packet per round | Never the only critic |
+| **Language critic** | On translated deliverables: judges accuracy and whether the analysis survives in the target language | Bounded packet per round, translated builds only | Native in the target language and a different family from whatever drafted the translation; its tuned text re-enters convergence |
 | **Escalation consult** | One-shot verdict on a judgment knot the loop stalemated on | Single bounded packet, premium model | Break-glass, not a step: advice to the lead, never a verdict of record |
 
 Minimum to start: one API key for the drafter plus two critics on a different family than
@@ -252,6 +257,22 @@ flat-rate CLI you are already signed into for the second family's share. One cav
 carry: if the second drafter family is the same as your cross-family critic, that critic
 is auditing its own family's drafts on those sections, so the lead's synthesis and the
 second critic carry the independence there.
+
+**The second bulk family usually costs nothing.** When your bulk channel hosts more than
+one model family (Ollama Cloud serves GLM and DeepSeek, both flat), the second drafter
+family is a model-name swap in the same job file: same endpoint, same key, zero added
+integration. That same free family is where the bulk tagger lives, and on translated
+builds it can hold the language-critic seat when it is native in the target language,
+with your metered native option declared as the fallback rather than letting the drafter
+self-bless because the primary critic's probe failed.
+
+**The bulk tier splits in two, and the split is a bright line.** Bulk hands take only
+chores a mechanical diff can verify, with the pass/fail check stated up front. The moment
+a chore needs a per-item judgment call (is this mention negative, which topic is this
+post), it is bulk-tagger work: still high-volume and cheap, but the lead spot-checks a
+sample, because a wrong judgment at volume ships a wrong aggregate. And the moment it
+needs a source-truth call (is this figure right, attributable, satire), it is deputy or
+critic work and no bulk seat touches it.
 
 **The escalation seat now exists as a platform primitive.** Anthropic's advisor tool
 (beta, Claude API) lets an executor model consult a stronger model mid-generation,
@@ -396,7 +417,9 @@ return concurrently. Run it as a background job.
 The default endpoint targets [Ollama Cloud](https://ollama.com) with `glm-5.2`, chosen for
 being near-free, long-context, and a third model family distinct from GPT and Claude (so it
 makes a good cross-family worker). Any OpenAI-compatible provider and model works: set
-`CROSSCHECK_API_URL` and the `model` field.
+`CROSSCHECK_API_URL` and the `model` field. When one provider hosts several families, a
+different `model` value per job file gives you the mixed-family fan-out on a single
+endpoint and key.
 
 ## Critics (reference setup)
 
@@ -499,7 +522,10 @@ class. But treat compiled output like any other worker output:
 for new builds, off for small modifications; never hard-blocks), `modificationMode`
 (delta-draft the change, then regression-audit the whole file), `dataDeputy` (optional
 worker that populates the ledger but never signs off), `bulkHands` (mechanical
-diff-verifiable chores only), `criticModels` (at least two, cross-family; substitute a
+diff-verifiable chores only), `bulkTagger` (per-item judgment at volume; the lead
+spot-checks a sample; never judges or ships), `languageCritic` (translated builds only:
+native in the target language, different family from the translation drafter, metered
+fallback declared), `criticModels` (at least two, cross-family; substitute a
 family or report unverified if one is down), `escalationConsult` (break-glass single-shot
 decision packet to your premium model; more than once per run means reseat),
 `requireConvergence` (both critics approve the same unchanged final), `requirementLedger`
