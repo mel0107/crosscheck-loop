@@ -350,6 +350,27 @@ roster says so; an empty seat reported honestly beats a surprise bill (same rule
 escalation seat). Any judge's fix or rethink verdict voids the clean pass and loops, same
 as a critic round.
 
+**The freeze judges wear the buyer's chair, not just the auditor's.** A judge briefed only
+to "find defects before ship" behaves like a QA gate: in production, every freeze round
+across two multi-round gates returned figure reconciliation and copy defects, and no round
+ever asked whether the buyer would act on the deliverable. Both questions matter, so the
+freeze packet carries two parts. Part A is the fidelity pass: findings, ledger, arithmetic.
+Part B re-reads the deliverable as the buyer persona it will be pitched to (a CMO, a brand
+director, a PR director, procurement; set per deliverable, defaulting from the artifact's
+stated audience). Frame part B as a real meeting: a 30 to 45 minute pitch in that persona's
+room, with the case background written in a sales-qualification structure (SPICED or your
+equivalent: Situation, Pain, Impact, Critical event, Decision) weighted toward situation,
+pain, and impact, so the judge argues from the client's actual circumstances rather than a
+job title. The ask is constructive, honest feedback that would make the solution solve that
+persona's challenges and pain: where it lands, where it stops short, what they would still
+need before acting on it, and whether it moves budget. It is not a defect list, and never a
+fixed pushback quota. Code and method critique stay out of part B; the critics own those.
+Give each judge family a different chair (the head judge takes the named persona; the
+cross-family judge takes the skeptic buyer: measurement, ROI proof, the incumbent's
+counter) so the panel spars from two angles instead of duplicating one. The argument critic
+carries the same persona lens mid-build, so the buyer's voice is heard before the freeze,
+not only at it.
+
 ## Seat economics
 
 Token spend should follow judgment density, not volume. Three profiles:
@@ -526,7 +547,10 @@ diff-verifiable chores only), `bulkTagger` (per-item judgment at volume; the lea
 spot-checks a sample; never judges or ships), `languageCritic` (translated builds only:
 native in the target language, different family from the translation drafter, metered
 fallback declared), `criticModels` (at least two, cross-family; substitute a
-family or report unverified if one is down), `escalationConsult` (break-glass single-shot
+family or report unverified if one is down), `judgePersonas` (the buyer personas the
+freeze judges re-read as in part B of the packet; default from the deliverable's stated
+audience, overridable at kickoff; SPICED-framed background weighted to situation, pain,
+and impact), `escalationConsult` (break-glass single-shot
 decision packet to your premium model; more than once per run means reseat),
 `requireConvergence` (both critics approve the same unchanged final), `requirementLedger`
 (on for correctness-critical builds), `stopOn` (clean pass, two-round stalemate, or cap,
