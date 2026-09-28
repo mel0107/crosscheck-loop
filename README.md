@@ -96,6 +96,13 @@ than the builder, because a same-family critic shares the builder's blind spots.
 vendors you use is entirely up to whatever API keys you already have. The structure is the
 value, not the brand of model in each seat.
 
+**Pin roles to tiers, keep model ids in one table.** Every rule in your wiring should name
+a tier (frontier lead, cheap long-context worker, third-family drafter,
+target-language critic), never a model id. The ids live in exactly one table next to the
+seat probe, so a vendor rotating a model touches one section and no rule silently points
+at a retired name. The seat file records what is live; the table records what each tier
+resolves to; the rules never mention either.
+
 ## First run: declare your seats
 
 Before the first run, write down which families you actually have in a `seats.json` next
@@ -115,6 +122,44 @@ Two rules the file encodes:
 - **Re-probe on change.** A new key, a newly installed CLI, or a seat failing mid-run all
   mean regenerate the file, not wait to be reminded. The file holds availability booleans
   only, never key values, so it is safe to keep next to the config.
+
+## Ground rule: a failed seat probe is an auth failure until proven otherwise
+
+Agent hosts run shell commands in a non-login shell, so a spawned CLI does not inherit
+anything your shell profile exports. That splits seats into two kinds, and the difference
+decides whether you can trust a probe at all:
+
+| Where the CLI keeps its auth | Bare spawn works? | How to invoke it |
+|---|---|---|
+| An environment variable | No | wrap it: `zsh -i -c '<cli> ...'`, or inject the variable into the agent's own env config |
+| A file on disk | Yes | call it directly |
+
+An env-var CLI spawned bare does not say "I have no credentials". It fails with whatever
+its auth layer says, commonly an expired-session or token error, and that reads exactly
+like a model that has been withdrawn or is out of quota. A lead that takes it at face
+value records the seat as dead, and then the roster is quietly one voice short.
+
+**The tell costs one command.** Probe a second and third model on the same CLI. If every
+model fails identically, it is never the model: a withdrawal or a quota limit does not
+land on all of them at the same instant. Confirm with that CLI's own auth check before
+concluding anything.
+
+**Never record a seat dead off a bare spawn.** Two reasons. An empty seat is honest and
+the loop already handles it, a wrong dead-seat claim silently degrades the panel and
+outlives the run that made it: a "that judge is unavailable" note written somewhere
+durable keeps being read by later sessions after the environment is fixed. And a seat that reads dead is the moment a lead
+is most tempted to substitute a seat outside the declared roster, which quietly changes
+who is judging the work.
+
+Two practical consequences worth wiring in:
+
+- **Put the spawn contract in the wrapper, not in a habit.** A one-line launcher that
+  sources the login shell and, on auth failure, prints "this is auth, not the model"
+  removes the judgment call from every future run.
+- **Availability belongs in the machine-local file, rules belong in the tracked one.**
+  If your `seats.json` is gitignored (it should be, it describes one machine), then any
+  rule you write into it reaches nobody. Rules go in the tracked template and the README,
+  or they do not propagate.
 
 ## Ground rule: seats are processes, not personas
 
@@ -166,7 +211,11 @@ completeness alongside fabrication.
    bound before the build, not only caught at audit.
 3. **Principal direction gate (human, default-on for new builds).** Before any critic burns
    a round, the human principal reviews the synthesized draft for direction: intent, framing,
-   taste. This is the one failure class critics cannot catch, because they verify against the
+   taste. Attach a one-paragraph persona pre-read from the cheap worker: the non-technical
+   buyer (see the judge panel) reads the synthesized copy and says what they would take away
+   and what they would not follow. It costs seconds and puts the buyer's reaction next to the
+   draft before direction locks, so framing that fails the buyer loops here, not at the freeze.
+   Direction is the one failure class critics cannot catch, because they verify against the
    brief, not against what the principal actually wanted. Structural feedback (add or kill a
    section, reframe the narrative, change data sources) loops cheaply here while the critics
    stay idle. The gate locks only on a round with zero change requests; if the lead is unsure
@@ -187,12 +236,21 @@ completeness alongside fabrication.
    render/technical lens (it catches the regression class prose critics miss, e.g. a CSS bar
    fill computing to 0px). The cross-family catch is load-bearing: if your only cross-family
    critic errors or is unavailable, substitute another family or report the run as
-   unverified. Never let a single-family run pass silently as converged.
+   unverified. Never let a single-family run pass silently as converged. Two wall-clock
+   rules keep this step short. The argument critic needs only the copy and the section map,
+   so it launches as soon as the copy is locked, while the lead is still assembling the file.
+   And on multi-section artifacts the correctness critics run one concurrent call per
+   section per critic, plus one cheap whole-file consistency pass: a long-context worker
+   reads the entire artifact for figures that disagree across sections and edits that leaked
+   into untouched parts. A six-section deck is then one read of wall clock, not six in
+   sequence. The argument critic is never sharded; it judges the whole spine.
 5. **Lead judges and loops to convergence.** The lead applies the real findings and
    re-submits the WHOLE file, not just the changed section, so critics catch internal
    inconsistencies an edit leaves behind (a claim that referenced data another round just
    removed, a stat that no longer matches an updated table), not only the specific finding
-   that triggered the edit. **The loop is not done until both critics approve the same
+   that triggered the edit. On a sharded run the re-submission is the changed sections to the
+   seats whose findings drove the edits, plus the whole-file consistency pass every round, so
+   the cross-section catch survives the speedup. **The loop is not done until both critics approve the same
    unchanged final.** Any edit after a clean pass voids that pass, so the file you ship is
    one the critics actually saw, not one edited past their last look. What this does not
    catch: a version that is internally consistent but has drifted from the framing or
@@ -357,7 +415,12 @@ ever asked whether the buyer would act on the deliverable. Both questions matter
 freeze packet carries two parts. Part A is the fidelity pass: findings, ledger, arithmetic.
 Part B re-reads the deliverable as the buyer persona it will be pitched to (a CMO, a brand
 director, a PR director, procurement; set per deliverable, defaulting from the artifact's
-stated audience). Frame part B as a real meeting: a 30 to 45 minute pitch in that persona's
+stated audience). The persona is always a non-technical buyer: it does not read code, method,
+or analyst vocabulary, and a line it would not understand or could not act on is a defect of
+the same weight as a wrong figure (the plain-reader test). Run part A and part B as two
+concurrent one-shots per judge family, and both families at once, so the panel costs one
+read of wall clock rather than four; the two parts share a packet, not a context. Frame part
+B as a real meeting: a 30 to 45 minute pitch in that persona's
 room, with the case background written in a sales-qualification structure (SPICED or your
 equivalent: Situation, Pain, Impact, Critical event, Decision) weighted toward situation,
 pain, and impact, so the judge argues from the client's actual circumstances rather than a
@@ -370,6 +433,58 @@ cross-family judge takes the skeptic buyer: measurement, ROI proof, the incumben
 counter) so the panel spars from two angles instead of duplicating one. The argument critic
 carries the same persona lens mid-build, so the buyer's voice is heard before the freeze,
 not only at it.
+
+## Modification mode: edit the locked file, audit the whole file
+
+Most real work is iteration on an artifact that is already locked, where regenerating it
+throws away hand-tuned design and the drafter seat goes idle. The shape changes:
+
+1. **Lock the existing file.** It is the base. Nobody regenerates it.
+2. **Scope the delta.** Name exactly what changes and what must not.
+3. **Delta draft.** The long-context worker holds the whole locked file and drafts N
+   variants of only the changed region, so the candidates match the existing patterns. The
+   lead judges and grafts the best in. Workers draft candidates; the lead grafts.
+4. **Regression audit.** The part greenfield does not have. Critics read the WHOLE file,
+   not the delta: one on render and consistency (did the edit break layout, leak styling into
+   untouched sections, or unbalance a figure that appears twice), the cross-family critics on
+   the change itself. Modifications break the parts you did not touch.
+5. **Converge and gate** as normal.
+
+## Translated builds: the language critic
+
+Off unless the deliverable is being translated. A translation is the one case where a critic
+family changes on purpose: most critics are weak judges of a language they were not built
+for, so the language verdict moves to a critic native in the target language and on a
+different family from the translation drafter. Three boundaries hold it honest. The drafter
+never judges its own translation, even when it is the strongest native model you have; if
+the critic seat is down, the lead drafts and the would-be drafter becomes the critic, so the
+same model never drafts and judges the same text. The other critics stay on
+language-independent checks (figures, logic, render) and never rule on phrasing. And a
+critic that tunes the text does not bless its own tuning: the tuned version goes back
+through the convergence check like any other edit.
+
+## Tuning note: the gate is wide, not long
+
+The loop as written is serial: argument critic, then correctness critics, then judge and
+apply, then a full re-audit, then a freeze panel that reads twice per family. Every
+whole-artifact frontier read costs minutes, and a re-audit that re-reads the whole file for
+a one-section fix pays that price again. In production a Tier 2 gate on a six-view deck ran
+to an hour on that shape. The fix is to widen the gate, not to cut rounds:
+
+- **Overlap the argument critic with the build.** It reads copy and a section map; give it
+  those the moment direction locks and let it run while the file is assembled.
+- **Shard the correctness pass.** One concurrent call per section per critic, plus the
+  whole-file consistency pass. The whole-file pass is not optional: sharding hides exactly
+  the cross-section faults it exists to catch.
+- **Fire the freeze panel at once.** Fidelity and persona as separate concurrent one-shots,
+  both judge families in parallel. Four reads, one wait.
+- **Re-audit only what moved.** Changed sections to the seats whose findings drove the
+  edits, whole-file pass every round.
+
+On one six-view deck this roughly halved the wall clock; your ratio depends on section count. Two cautions: providers
+cap concurrent requests, so every shard runs inside one process holding a semaphore, never
+as parallel processes; and a confirmation pass verifies fixes, so it runs at a normal
+reasoning setting, not the maximum you used for discovery.
 
 ## Seat economics
 
