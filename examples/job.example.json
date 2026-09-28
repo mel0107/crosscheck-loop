@@ -7,8 +7,10 @@
     "C-skeptic": "ANGLE: argue the opposite first (one good model is enough), then refute it."
   },
   "out_prefix": "/tmp/crosscheck-draft",
-  "model": "glm-5.2",
-  "max_tokens": 3000,
+  "model": "glm-5.3-flash",
   "temperature": 0.6,
-  "ext": "md"
+  "ext": "md",
+  "num_predict": 20000,
+  "think": true,
+  "concurrency": 3
 }

@@ -421,26 +421,43 @@ staying a paper assumption.
 
 ## glm_fanout.py
 
-A reference implementation of step 1: parallel draft fan-out against any
-OpenAI-compatible chat endpoint.
+A reference implementation of the fan-out: parallel drafts, or parallel critic calls, against
+a hosted model endpoint. It exists because the failure modes of running many long requests at
+once are not obvious and every one of them was hit in production.
 
 ```sh
 export CROSSCHECK_API_KEY=...            # your provider key
-# optional: export CROSSCHECK_API_URL=https://your-endpoint/v1/chat/completions
+# optional: export CROSSCHECK_ENV_FILE=/path/to/.env   (KEY=value lines, read if the var is unset)
 python3 glm_fanout.py examples/job.example.json
 ```
 
-`job.json`: `system`, `user`, `angles` (one variant per key), `out_prefix`, optional
-`model`, `max_tokens`, `temperature`, `ext` (`md` or `html`). Auth and endpoint come from
-the environment (see `.env.example`). Each angle runs in its own thread, so N variants
-return concurrently. Run it as a background job.
+`job.json`: `system`, `user`, `angles` (one variant per key), `out_prefix`, optional `model`
+or `models` (a list runs every model inside ONE process so the concurrency cap holds across
+all of them; outputs get a `-<model>` suffix), `num_predict` (output budget; a thinking model's
+reasoning counts against it), `think`, `temperature`, `concurrency`, `retries`, `timeout`,
+`save_thinking`, `ext` (`md` or `html`; html strips a code fence), and `endpoint` plus
+`key_env` to point at any OpenAI-compatible provider instead. Run it as a background job and
+read the `OK` / `FAIL` line per angle; an `OK` never carries an empty file.
 
-The default endpoint targets [Ollama Cloud](https://ollama.com) with `glm-5.2`, chosen for
-being near-free, long-context, and a third model family distinct from GPT and Claude (so it
-makes a good cross-family worker). Any OpenAI-compatible provider and model works: set
-`CROSSCHECK_API_URL` and the `model` field. When one provider hosts several families, a
-different `model` value per job file gives you the mixed-family fan-out on a single
-endpoint and key.
+The default endpoint is Ollama Cloud's native chat API, because it exposes the thinking
+toggle and the output budget and hosts several third-family models on one flat plan. Any
+provider works through `endpoint`. What the script handles so you do not have to:
+
+- **Concurrency limits.** Past the provider's cap a request either returns HTTP 429 at once
+  or sits queued and is closed at 60 seconds with zero bytes received, which looks like a
+  payload problem and is not (50 KB of copy answers in under half a minute). The script caps
+  requests in flight (default 3), staggers starts, and retries with backoff on both signals.
+  The cap only holds inside one process; three fan-out processes side by side put nine
+  requests in flight and the disconnects come back. Put every model in one job.
+- **Thinking eats the output.** A critic pass can reason for hundreds of thousands of
+  characters. With a small budget the run ends on length with EMPTY content, and some models
+  also write the whole answer into the reasoning field and stop with empty content. The
+  script defaults the budget high, keeps the reasoning on disk, and reruns that angle with
+  thinking off.
+- **Per-model output caps.** Some models reject a budget above their maximum with HTTP 400.
+  The script reads the cap out of the error and retries with it.
+- **Streaming is required.** A non-streamed request sits silent through the whole generation
+  and the same 60-second reaper closes it.
 
 ## Critics (reference setup)
 
