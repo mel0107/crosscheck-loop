@@ -71,6 +71,23 @@ BEFORE making the edit, run it after, show the output. "I feel fast enough" is n
 Tier 0; "the grep returns zero and the totals assert passes" is. If you cannot name the
 check up front, it is not Tier 0.
 
+A typed check also counts as Tier 0 proof. When the check is a per-item judgment rather
+than a string match (does this quote support this claim, is this verbatim on the stated
+stance, is this headline number in the data table), write it as a yes/no or choice question
+with criteria and run it over every item through a classifier that returns an answer plus a
+probability. Show three numbers: items, answers that fail, answers below the confidence
+threshold. Items below the threshold go to the lead's eyes, not to a critic, and the lead
+spot-checks a sample of the confident answers too, the same rule the bulk tagger follows:
+a classifier is proof only once its agreement on that question has been checked. This keeps
+per-item correctness questions out of the expensive rounds.
+
+Numbers in prose that drift from the data are a build problem, not a critic finding. When a
+recompute changes a table, prose written earlier still quotes the old figure, and critics
+spend whole rounds catching it. Fill visible copy from the data at build time and add an
+assert that every headline figure in the visible copy exists in the data (dates, years and
+rounded ratios need their own rule); then the drift fails the build instead of costing a
+review pass.
+
 Tier 1 keeps the cross-family rule: one round of both critics, never a single critic
 alone, so the cheap tier cannot pass a single-family blind spot.
 
@@ -286,11 +303,11 @@ Fill each with any model you have access to; only the boundaries are fixed. Role
 | **Frontier judge (cross-family)** | Ship / fix / rethink at the freeze, on a forked fresh context | One bounded packet per freeze | Different family from the lead; a fix verdict voids the clean pass and loops |
 | **Argument critic (frontier, fresh fork)** | Judges whether the deliverable argues anything, BEFORE the correctness critics run | One bounded packet, first audit pass | Figures are out of its scope (a numeric finding is a failed response); proposes a spine, never edits |
 | **Drafter** | Fans out N variants, or the delta on a modification | High volume, so cheapest capable tier | Never judges, never ships |
-| **Bulk tagger** | Per-item judgment at volume: tagging, sentiment coding, first-pass classification over a supplied corpus | High volume, flat or free channel | The lead spot-checks a sample before any tag feeds a shipped figure; never judges, never ships |
+| **Bulk tagger** | Per-item judgment at volume: tagging, sentiment coding, first-pass classification over a supplied corpus | High volume, flat or free channel, or a typed classifier priced per item | The lead spot-checks a sample before any tag feeds a shipped figure; never judges, never ships |
 | **Data deputy** | Pulls sources, builds tables, fills the ledger | Bounded per build | Populates, never signs off |
 | **Bulk hands** | Mechanical chores: parse, reformat, dedupe, liveness-check | Many small parallel calls, cheapest tier | Only tasks verifiable by mechanical diff; it transforms, never adjudicates |
 | **Critic 1 (cross-family)** | Adversarial audit on a different family than the builder | Bounded packet per round | Load-bearing; if it is down, substitute a family or report unverified |
-| **Critic 2 (fresh eyes)** | Second lens: craft, voice, gaps | Bounded packet per round | Never the only critic |
+| **Critic 2 (fresh eyes)** | Second lens: craft, voice, gaps | Bounded packet per round | Never the only critic; a different family from the builder beats a stronger model from the builder's family |
 | **Language critic** | On translated deliverables: judges accuracy and whether the analysis survives in the target language | Bounded packet per round, translated builds only | Native in the target language and a different family from whatever drafted the translation; its tuned text re-enters convergence |
 | **Escalation consult** | One-shot verdict on a judgment knot the loop stalemated on | Single bounded packet, premium model | Break-glass, not a step: advice to the lead, never a verdict of record |
 
@@ -323,6 +340,23 @@ integration. That same free family is where the bulk tagger lives, and on transl
 builds it can hold the language-critic seat when it is native in the target language,
 with your metered native option declared as the fallback rather than letting the drafter
 self-bless because the primary critic's probe failed.
+
+**Seat the fresh-eyes critic on a third family when you can.** A stronger critic that
+shares the builder's family also shares its blind spots, so a weaker model from another
+family is worth more in this seat. Fall back to a same-family subagent only when no third
+family is live, and flag it in the roster so the run's independence is visible.
+
+**Tag once, with probabilities, and escalate per dimension.** If a typed classifier is
+available (one that returns an answer plus a probability per question), run it as the first
+pass: every dimension (relevance, stance, intent, theme, author type) in one request per
+item. Send only the dimensions that came back below the confidence threshold to a chat-model
+tail, dimension by dimension; escalating an item whenever any one dimension is uncertain
+sent more than half of one pilot's items to the expensive tail (one pilot's observation,
+not a benchmark). Write the tags to a file once and have every
+later round read that file; re-tagging after a copy change is waste. Before a tag feeds a
+shipped figure, hand-code a sample of 50 to 100 items and report agreement per dimension:
+in one production corpus stance agreed less often than intent or fit did, so check it
+first.
 
 **The bulk tier splits in two, and the split is a bright line.** Bulk hands take only
 chores a mechanical diff can verify, with the pass/fail check stated up front. The moment
